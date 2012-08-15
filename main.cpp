@@ -308,11 +308,45 @@ int main(int argc, char *argv[])
 	die("Sample names differ in files " + e.evidenceFile() + " and "
 	    + evid[0].evidenceFile());
       }
-  }
   if(VERBOSE)
-    cerr << "Added evidence for " << evid[0].sampleNames().size()
+    cerr << "Added evidence for " << evid[i].sampleNames().size()
 	 << " samples" << endl;
+  }
 
+  vector<EvidenceSource> *trainingevid = 0;
+  map<string,size_t> *trainingSampleMap = 0;
+  vector<Evidence::Observation> *trainingSampleData = 0;
+
+  if (conf.trainingEvidenceSize() == 0) {
+    trainingevid = &evid;
+    trainingSampleMap = &sampleMap;
+    trainingSampleData = &sampleData;
+    if (VERBOSE)
+      cerr << "Using inference evidence as training evidence" << endl;
+  }
+  else {
+    trainingevid = new vector<EvidenceSource>();
+    trainingSampleMap = new map<string,size_t>();
+    trainingSampleData = new vector<Evidence::Observation>();
+
+    vector<Evidence::Observation> sampleData;
+    for(size_t i = 0; i < conf.evidenceSize(); i++) {
+      EvidenceSource e(conf.trainingEvidence(i), batchPrefix);
+      if(VERBOSE)
+        cerr << "Parsing evidence file: " << e.evidenceFile() << endl;
+      e.loadFromFile(pathway, *trainingSampleMap, *trainingSampleData);
+      trainingevid->push_back(e);
+      if (i > 0 && e.sampleNames() != trainingevid->at(0).sampleNames())
+        {
+          die("Sample names differ in files " + e.evidenceFile() + " and "
+              + trainingevid->at(0).evidenceFile());
+        }
+    if(VERBOSE)
+      cerr << "Added evidence for " << trainingevid->at(i).sampleNames().size()
+           << " samples" << endl;
+    }
+  }
+  
   // /////////////////////////////////////////////////
   // Construct the factor graph
   vector< Factor > factors;
@@ -363,7 +397,7 @@ int main(int argc, char *argv[])
   // /////////////////////////////////////////////////
   // Run EM
   const PropertySet& em_conf = conf.emProps();
-  Evidence evidence(sampleData);
+  Evidence evidence(*trainingSampleData);
   EMAlg em(evidence, *prior, msteps, em_conf);
   while(!em.hasSatisfiedTermConditions()) {
     em.iterate();
@@ -399,6 +433,12 @@ int main(int argc, char *argv[])
   }
 
   delete prior;
+
+  if (conf.trainingEvidenceSize() > 0) {
+    delete trainingevid;
+    delete trainingSampleMap;
+    delete trainingSampleData;
+  }
 
   return 0;
 }

@@ -9,6 +9,7 @@
 #include "configuration.h"
 
 const std::string RunConfiguration::INFERENCE_CONF_TOKEN("inference");
+const std::string RunConfiguration::TRAINING_EVIDENCE_CONF_TOKEN("training_evidence");
 const std::string RunConfiguration::EVIDENCE_CONF_TOKEN("evidence");
 const std::string RunConfiguration::PATHWAY_CONF_TOKEN("pathway");
 const std::string RunConfiguration::EM_STEP_CONF_TOKEN("em_step");
@@ -55,6 +56,8 @@ RunConfiguration::addConfigurations(std::istream& is)
 	_inferences.push_back(conf);
       } else if (type == EVIDENCE_CONF_TOKEN) {
 	_evidences.push_back(conf);
+      } else if (type == TRAINING_EVIDENCE_CONF_TOKEN) {
+	_trainingevidences.push_back(conf);
       } else if (type == EM_STEP_CONF_TOKEN) {
 	std::set<PropertyKey> keys = conf.keys();
 	std::set<PropertyKey>::iterator i = keys.begin();
@@ -77,3 +80,5 @@ RunConfiguration::addConfigurations(std::istream& is)
 
 size_t RunConfiguration::evidenceSize() {return _evidences.size();}
 PropertySet& RunConfiguration::evidence(size_t i) {return _evidences.at(i);}
+size_t RunConfiguration::trainingEvidenceSize() { return _trainingevidences.size(); }
+PropertySet& RunConfiguration::trainingEvidence(size_t i) {return _trainingevidences.at(i); }

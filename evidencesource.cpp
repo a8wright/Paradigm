@@ -107,7 +107,7 @@ EvidenceSource::EvidenceSource(PropertySet &p, string base) :
 
   if (p.hasKey("suffix")) {
     _suffix = p.getAs<string>("suffix");
-    _evidenceFile = base + _suffix;
+    _evidenceFile = base + ( p.hasKey("file_suffix") ? p.getAs<string>("file_suffix") :  _suffix );
   } else {
     THROW("EvidenceSource conf. is missing the required property \"suffix\"");
   }
