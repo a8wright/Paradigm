@@ -44,9 +44,9 @@ const std::string PathwayTab::CENTRAL_DOGMA =
 const std::string PathwayTab::OBSERVATION_INTERACTION = "-obs>";
 
 size_t countVotesRepressorDominates(size_t down, size_t up) {
-  if (up > 0 & up > down) {
+  if (up > 0 && up > down) {
     return 2;
-  } else if (down > 0 & down >= up) {
+  } else if (down > 0 && down >= up) {
     return 0;
   } else {
     return 1;

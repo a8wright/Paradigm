@@ -99,7 +99,7 @@ public:
 
   const string& evidenceFile() {return _evidenceFile;}
   const vector<string>& sampleNames() {return _sampleNames;}
-  const int factorCount(size_t sample) {return _sampleFactorNum.at(sample);}
+  int factorCount(size_t sample) {return _sampleFactorNum.at(sample);}
   const string& factorString(size_t sample) {return _sampleFactors.at(sample);}
 };
 
