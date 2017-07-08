@@ -1,6 +1,6 @@
 ## System configuration for library locations
 ## Defining any of these as environment variables will override these locations
-LIBDAI_DIR ?= /projects/sysbio/apps/${MACHTYPE}
+LIBDAI_DIR ?= /libdai/
 BOOST_DIR ?= /projects/sysbio/apps/${MACHTYPE}
 BOOST_VER ?= boost-1_38
 
